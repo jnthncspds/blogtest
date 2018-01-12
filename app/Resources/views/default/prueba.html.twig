@@ -11,15 +11,17 @@
     </tr>
   </thead>
   <tbody>
+    {% for t in test %}
     <tr>
-      <th scope="row">1</th>
-      <td>Larry</td>
-      <td>the Bird</td>
-      <td><a href="/test/details/1" class="btn btn-success">Detalles</a>
-        <a href="/test/edit/1" class="btn btn-default">Editar</a>
-        <a href="/test/delete/1" class="btn btn-danger">Borrar</a>
+      <th scope="row">{{t.id}}</th>
+      <td>{{t.name}}</td>
+      <td>{{t.date|date('d/m/y')}}</td>
+      <td><a href="/test/details/{{t.id}}" class="btn btn-success">Detalles</a>
+        <a href="/test/edit/{{t.id}}" class="btn btn-default">Editar</a>
+        <a href="/test/delete/{{t.id}}" class="btn btn-danger">Borrar</a>
       </td>
     </tr>
   </tbody>
+  {% endfor %}
 </table>
 {% endblock %}
