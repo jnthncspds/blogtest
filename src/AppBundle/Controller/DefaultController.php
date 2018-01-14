@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
+
 class DefaultController extends Controller
 {
     /**
@@ -43,12 +44,52 @@ class DefaultController extends Controller
       ));
     }
     /**
-    *@Route("/test/edit", name="prueba_edit")
+    *@Route("/test/edit/{id}", name="prueba_edit")
     *
     */
 
-    public function editAction(){
-      return $this->render('default/edit.html.twig');
+    public function editAction($id, Request $request){
+      $test = $this->getDoctrine()
+      ->getRepository('AppBundle:Tests')
+      ->find($id);
+
+      $form= $this->CreateFormBuilder($test)
+      ->add('name', TextType::class, array('attr'=> array('class'=> 'form-control', 'style'=> 'margin-bottom:15px')))
+      ->add('description', TextareaType::class, array('attr'=>array('class'=>'form-control', 'style'=>'margin-bottom:15px')))
+      ->add('date', DateTimeType::class, array('attr'=>array('class'=>'formcontrol', 'style'=>'margin-bottom:15px')))
+      ->add('save', SubmitType::class, array('attr'=>array('class'=>'btn btn-primary')))
+      ->getForm();
+
+      $form->handleRequest($request);
+
+      if ($form->isSubmitted() && $form->isValid()) {
+        # code...
+        $name = $form['name']->getData();
+        $description = $form['description']->getData();
+        $date = $form['date']->getData();
+
+        $test->setName($name);
+        $test->setDescription($description);
+        $test->setDate($date);
+
+        $em = $this->getDoctrine()->getManager();
+        $test = $em->getRepository('AppBundle:Tests');
+
+        $em->flush();
+
+        $this->addFlash(
+          'notice', 'Actividad Creada'
+        );
+
+        return $this->redirectToRoute('prueba');
+
+      }
+
+
+      return $this->render('default/edit.html.twig', array(
+        'test' => $test,
+        'form' => $form->createView(),
+      ));
     }
     /**
     *@Route("/test/create", name="prueba_create")
@@ -89,19 +130,24 @@ class DefaultController extends Controller
         return $this->redirectToRoute('prueba');
 
       }
-
-
       return $this->render('default/create.html.twig', array(
         'form' => $form-> createView(),
       ));
     }
 
     /**
-    *@Route("/test/details", name="prueba_details")
+    *@Route("/test/details/{id}", name="prueba_details")
     *
     */
 
-    public function detailsAction(){
-      return $this->render('default/details.html.twig');
+    public function detailsAction($id){
+      $t = $this->getDoctrine()
+      ->getRepository('AppBundle:Tests')
+      ->find($id);
+
+      return $this->render('default/details.html.twig', array(
+        't' => $t
+      ));
+
     }
 }

@@ -1,2 +1,11 @@
 {% extends 'base.html.twig' %}
-{% block boy %}{% endblock %}
+{% block body %}
+
+<a href="{{path('prueba')}}" class="btn btn-primary" style="margin-top:20px">Ir al listado</a>
+
+<h2 class = 'page-header' style = 'margin-top:15px'>{{t.name}}</h2>
+<ul class="list-group">
+  <li class="list-group-item" >{{t.description}}</li>
+  <li class="list-group-item"> La fecha de realizacion es: <strong>{{t.date|date('d/m/y')}}</strong> </li>
+</ul>
+{% endblock %}
